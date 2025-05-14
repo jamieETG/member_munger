@@ -1,0 +1,3 @@
+EmployeeID,BirthDate,First Name,Surname,Gender_Code,Home Address Line 1,Home City,Home_State,PostalCode,SSN_Employee,Group No.,Sub_Grp,Ben_Eff_Date,Dep_FName1,Dep_LName1,Dep_DOB1,Relationship1,OfficeLocation,EmergencyContact
+E1001,1992-03-10,Alice,Wonder,F,55 Queen St,Palaceville,WD,12345,100200300,GRP1,Alpha,2022-01-01,Bob,Wonder,1990-05-05,Partner,HQ,Carol 555-1111
+E1002,1985-07-22,Charles,Xavier,M,1407 Graymalkin Ln,Salem Center,NY,10560,400500600,GRP2,Beta,2021-06-15,Jean,Grey,1988-11-11,Spouse,Remote,Moira 555-2222 

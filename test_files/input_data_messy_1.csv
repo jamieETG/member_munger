@@ -1,0 +1,3 @@
+Grp #,SUBGROUP,Class_ID,LName,FName,M.I.,DOB,Sex,Address,Town,ST,Zip Code,SocSec,EffDate,TYPE,Dental Plan,Vision Plan,Dep1 FName,Dep1 LName,Dep1 DOB,Dep1 Rel
+100,A,X1,Doe,John,R,05/15/1975,M,789 Pine Ln,Mapleton,TX,75001,987654321,01/01/2022,EMP,Delta Dental,VSP Gold,Jenny,Doe,10/10/1978,Spouse
+101,B,Y2,Dane,Jane,,03/20/1988,F,101 Birch Rd,Oakwood,FL,33301,123456789,06/15/2022,EMP+1,Guardian,EyeMed,Billy,Dane,07/07/2010,Child 

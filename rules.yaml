@@ -1,0 +1,186 @@
+standard_output_columns:
+- name: GroupNumber
+  type: string
+- name: SubGroup
+  type: string
+- name: ClassID
+  type: string
+- name: CoPlan
+  type: string
+- name: ProductDentalCoverage
+  type: string
+- name: DentalProductCode
+  type: string
+- name: ProductVisionCoverage
+  type: string
+- name: VisionProductCode
+  type: string
+- name: EffectiveDate
+  type: date
+- name: CoverageType
+  type: string
+- name: Department
+  type: string
+- name: Location
+  type: string
+- name: SSN
+  type: string
+- name: LastName
+  type: string
+- name: FirstName
+  type: string
+- name: MiddleInitial
+  type: string
+- name: Suffix
+  type: string
+- name: DateOfBirth
+  type: date
+- name: Gender
+  type: string
+- name: StreetAddress
+  type: string
+- name: City
+  type: string
+- name: State
+  type: string
+- name: ZipCode
+  type: string
+- name: PhoneNumber
+  type: string
+- name: Dependent1LastName
+  type: string
+- name: Dependent1FirstName
+  type: string
+- name: Dependent1MiddleInitial
+  type: string
+- name: Dependent1Suffix
+  type: string
+- name: Dependent1EnrollmentIndicator
+  type: string
+- name: Dependent1DateOfBirth
+  type: date
+- name: Dependent1Gender
+  type: string
+- name: Dependent1Relationship
+  type: string
+- name: Dependent2LastName
+  type: string
+- name: Dependent2FirstName
+  type: string
+- name: Dependent2MiddleInitial
+  type: string
+- name: Dependent2Suffix
+  type: string
+- name: Dependent2EnrollmentIndicator
+  type: string
+- name: Dependent2DateOfBirth
+  type: date
+- name: Dependent2Gender
+  type: string
+- name: Dependent2Relationship
+  type: string
+column_name_aliases:
+  'Grp #': GroupNumber
+  SUBGROUP: SubGroup
+  Class_ID: ClassID
+  LName: LastName
+  FName: FirstName
+  M.I.: MiddleInitial
+  DOB: DateOfBirth
+  Sex: Gender
+  Address: StreetAddress
+  Town: City
+  ST: State
+  Zip Code: ZipCode
+  SocSec: SSN
+  EffDate: EffectiveDate
+  TYPE: CoverageType
+  Dental Plan: ProductDentalCoverage
+  Vision Plan: ProductVisionCoverage
+  Dep1 FName: Dependent1FirstName
+  Dep1 LName: Dependent1LastName
+  Dep1 DOB: Dependent1DateOfBirth
+  Dep1 Rel: Dependent1Relationship
+transformation_rules:
+- name: Split Full Name into First and Last
+  input_column: FullName
+  transformation_type: split_name_by_delimiter
+  options:
+    delimiter: ' '
+  output_mapping:
+    FirstName: part_1
+    LastName: part_2
+mapping_templates:
+  themapp:
+    description: adfasdf fasdfasdfa da df asdf
+    original_input_columns:
+    - EmployeeID
+    - BirthDate
+    - First Name
+    - Surname
+    - Gender_Code
+    - Home Address Line 1
+    - Home City
+    - Home_State
+    - PostalCode
+    - SSN_Employee
+    - Group No.
+    - Sub_Grp
+    - Ben_Eff_Date
+    - Dep_FName1
+    - Dep_LName1
+    - Dep_DOB1
+    - Relationship1
+    - OfficeLocation
+    - EmergencyContact
+    mapping:
+      GroupNumber: Group No.
+      SubGroup: Sub_Grp
+      EffectiveDate: Ben_Eff_Date
+      SSN: SSN_Employee
+      FirstName: First Name
+      DateOfBirth: BirthDate
+      Gender: Gender_Code
+      City: Home City
+      State: Home_State
+      ZipCode: PostalCode
+      Dependent1DateOfBirth: Dep_DOB1
+  sdffa:
+    description: 'adfad '
+    original_input_columns:
+    - EmployeeID
+    - BirthDate
+    - First Name
+    - Surname
+    - Gender_Code
+    - Home Address Line 1
+    - Home City
+    - Home_State
+    - PostalCode
+    - SSN_Employee
+    - Group No.
+    - Sub_Grp
+    - Ben_Eff_Date
+    - Dep_FName1
+    - Dep_LName1
+    - Dep_DOB1
+    - Relationship1
+    - OfficeLocation
+    - EmergencyContact
+    mapping:
+      GroupNumber: Group No.
+      SubGroup: Sub_Grp
+      EffectiveDate: Ben_Eff_Date
+      Department: Dep_FName1
+      Location: OfficeLocation
+      SSN: SSN_Employee
+      FirstName: First Name
+      DateOfBirth: BirthDate
+      Gender: Gender_Code
+      City: Home City
+      State: Home_State
+      ZipCode: PostalCode
+      Dependent1LastName: Dep_LName1
+      Dependent1FirstName: Dep_FName1
+      Dependent1DateOfBirth: Dep_DOB1
+      Dependent1Relationship: Relationship1

@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Munger Deluxe</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.5; /* Slightly reduced line-height */
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 960px;
+            margin: 15px auto; /* Reduced top/bottom margin */
+            padding: 15px; /* Reduced padding */
+            background-color: #fff;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1); /* Slightly reduced shadow */
+            border-radius: 8px;
+        }
+        h1, h2, h3, h4 {
+            color: #0056b3; /* A nice blue */
+            margin-bottom: 0.5em; /* Reduced bottom margin */
+            margin-top: 0.8em; /* Reduced top margin */
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8px; /* Reduced padding */
+            margin-bottom: 15px; /* Reduced margin */
+        }
+
+        /* Sections Styling */
+        .upload-section, .results-section {
+            background-color: #fdfdfd;
+            padding: 15px; /* Reduced padding */
+            margin-bottom: 15px; /* Reduced margin */
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        .results-section h2 {
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px; /* Reduced padding */
+        }
+
+        /* Form & Button Styling */
+        label {
+            display: block;
+            margin-bottom: 3px; /* Reduced margin */
+            font-weight: bold;
+        }
+        input[type="file"], input[type="text"], input[type="number"], select {
+            width: 95%; /* Slightly less than 100% to prevent overflow */
+            padding: 8px; /* Reduced padding */
+            margin-bottom: 10px; /* Reduced margin */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Include padding in width */
+        }
+        button {
+            background-color: #007bff; /* Bootstrap primary blue */
+            color: white;
+            padding: 8px 12px; /* Reduced padding */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95em; /* Slightly smaller font */
+            transition: background-color 0.2s ease-in-out;
+        }
+        button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+        button[type="submit"] {
+             width: 100%;
+             padding: 12px;
+             font-weight: bold;
+        }
+        #confirmAddSplitRule, #confirmAddAddressRule {
+             background-color: #28a745; /* Green */
+        }
+         #confirmAddSplitRule:hover, #confirmAddAddressRule:hover {
+             background-color: #218838; /* Darker green */
+        }
+        .delete-button {
+            background-color: #dc3545; /* Red */
+            padding: 3px 8px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        .delete-button:hover {
+             background-color: #c82333; /* Darker red */
+        }
+
+        /* Reduce margin specifically for rule definition toggles */
+        #toggleDefineSplitSectionButton, #toggleDefineAddressSectionButton {
+             margin-bottom: 5px;
+        }
+        
+        /* Reduce margin for process button */
+        #processForm button {
+            margin-top: 10px; /* Add a little space above */
+        }
+
+        /* Table Styling */
+        .dataframe, .preview-table, .output-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        .dataframe th, .dataframe td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            white-space: nowrap; /* Prevent text wrapping within cells */
+        }
+        .dataframe th {
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: bold;
+        }
+        .dataframe tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+         .dataframe tbody tr:hover {
+            background-color: #e2e6ea;
+        }
+
+        /* Mapping Section Styling */
+        .match-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        .match-exact { background-color: #28a745; /* Green */ }
+        .match-normalized { background-color: #17a2b8; /* Teal */ }
+        .match-alias { background-color: #ffc107; /* Amber */ }
+        .match-fuzzy-high { background-color: #fd7e14; /* Orange */ }
+        .match-fuzzy-medium { background-color: #fdd835; /* Yellow */ }
+        .match-fuzzy-low { background-color: #ffb74d; /* Orange - lighter */ }
+        .match-none { background-color: #adb5bd; /* Grey for no match or unmapped */}
+        /* New style for content-based suggestions */
+        .match-content { background-color: #6f42c1; /* Purple */ }
+        .match-details { font-size: 0.9em; color: #555; }
+        .editable-mapping-item {
+             display: flex; 
+             flex-wrap: wrap; /* Allow wrapping on smaller screens */
+             justify-content: flex-start; 
+             align-items: center; 
+              padding: 8px 10px; /* Reduced padding */
+             border-bottom: 1px solid #eee; 
+        }
+        .editable-mapping-item:last-child { border-bottom: none; }
+        .standard-col-info {
+             display: flex; 
+             align-items: center; 
+             flex-grow: 1; /* Allow this part to grow */
+             margin-right: 15px; /* Increased space before dropdown */
+             margin-bottom: 5px; /* Space below on wrap */
+             min-width: 250px; 
+        }
+        .standard-col-name { font-weight: bold; margin-right: 8px;}
+        .current-map-details { font-size: 0.85em; color: #666; margin-right: 8px; word-break: break-all; /* Help prevent long details overflowing */}
+        .map-dropdown select {
+             padding: 8px;
+             border-radius: 4px;
+             border: 1px solid #ccc; 
+             min-width: 200px; 
+             width: auto; /* Let it size based on content */
+             max-width: 300px; /* But prevent it becoming excessively wide */
+             margin-bottom: 5px; /* Space below on wrap */
+        }
+        /* Rule Definition Sections */
+        #defineSplitRuleSection, #defineAddressRuleSection {
+            border: 1px solid #ccc; 
+            padding: 15px; 
+            margin-bottom:15px; 
+            background-color:#f9f9f9;
+             border-radius: 5px;
+        }
+        /* Tighter spacing within rule definition sections */
+        #defineSplitRuleSection div, #defineAddressRuleSection div {
+             margin-bottom: 8px;
+        }
+        #defineSplitRuleSection h4, #defineAddressRuleSection h4 {
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        #defineSplitRuleSection h3, #defineAddressRuleSection h3 {
+             margin-top: 0;
+             color: #555;
+        }
+        #currentUiSplitRulesDisplay ul, #currentUiAddressRulesDisplay ul {
+             list-style-type: none; 
+             padding-left: 0;
+             margin-top: 10px;
+        }
+         #currentUiSplitRulesDisplay li, #currentUiAddressRulesDisplay li {
+             background-color: #eef;
+             padding: 8px 12px;
+             margin-bottom: 5px;
+             border-radius: 4px;
+             border: 1px solid #ddf;
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+        }
+
+        /* Utility Classes */
+        .hidden { display: none; }
+        .error {
+            color: #dc3545; /* Red */
+            font-weight: bold;
+            margin-top: 10px;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        /* New style for scrollable table containers */
+        .table-container {
+            overflow-x: auto; /* Enable horizontal scrolling */
+            max-width: 100%; /* Prevent container from exceeding parent width */
+            margin-bottom: 1em; /* Reduced space below the container */
+            border: 1px solid #e9ecef; 
+            background-color: #fdfdfd;
+            padding: 5px; /* Small padding around the table within the container */
+            border-radius: 4px;
+        }
+
+        /* Style for the slider container */
+        .slider-container {
+             margin-bottom: 15px;
+             padding: 10px;
+             background-color: #f8f9fa;
+             border: 1px solid #e9ecef;
+             border-radius: 5px;
+             display: flex; /* Use flexbox for alignment */
+             align-items: center; /* Vertically align items */
+             flex-wrap: wrap; /* Allow wrapping if needed */
+        }
+         .slider-container label {
+             margin-right: 10px; /* Space between label and slider */
+             margin-bottom: 0; /* Override default label margin */
+         }
+        .slider-container input[type="range"] {
+             flex-grow: 1; /* Allow slider to take available space */
+             margin-right: 10px;
+             cursor: pointer;
+             /* Reset width from general input style */
+             width: auto; 
+             max-width: 300px; /* Limit slider width */
+             margin-bottom: 0; /* Override general input style */
+             padding: 0; /* Override general input style */
+             vertical-align: middle;
+        }
+        .slider-container span {
+             font-weight: bold;
+             min-width: 30px; /* Ensure space for 3 digits */
+             text-align: right;
+             color: #0056b3;
+             vertical-align: middle;
+        }
+
+        /* Styles for Potential Template Matches Section */
+        #template-matches-section { /* Already a .results-section, so inherits some styling */
+            margin-top: 15px; /* Add some space above it */
+        }
+
+        #template-matches-content ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 10px;
+            margin-bottom: 0; /* Remove default ul bottom margin */
+        }
+
+        #template-matches-content li {
+            padding: 8px 12px;
+            margin-bottom: 6px; /* Space between items */
+            border-radius: 4px;
+            border: 1px solid #dde; /* Slightly softer border */
+            background-color: #f8f9fa; /* Light background for items */
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        #template-matches-content li:hover {
+            background-color: #e9ecef; /* Hover effect */
+        }
+
+        #template-matches-content input[type="radio"] {
+            margin-right: 10px;
+            /* Override general input styling that might make them too large or wide */
+            width: auto; 
+            padding: 0;
+            margin-bottom: 0; /* Align with label */
+            vertical-align: middle; /* Align radio with text */
+        }
+
+        #template-matches-content label {
+            font-weight: normal; /* Override general label boldness */
+            cursor: pointer;
+            margin-bottom: 0; /* Align with radio */
+            flex-grow: 1; /* Allow label to take remaining space */
+            vertical-align: middle; /* Align label text with radio */
+        }
+        
+        /* Optional: Slightly different style for the 'General Rules' option */
+        #template_radio_general_li { /* Assuming we add an ID to this li */
+            /* border-top: 2px solid #007bff; */ /* Example: a top border */
+            /* margin-top: 10px !important; */ /* Ensure space, if needed */
+        }
+
+        #apply-selected-template { /* Though JS hides it, good to have it styled */
+            margin-top: 10px;
+            background-color: #28a745; /* Green */
+        }
+        #apply-selected-template:hover {
+            background-color: #218838; /* Darker green */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Member Munger Deluxe</h1>
+
+        <div class="upload-section">
+            <h2>1. Upload CSV File</h2>
+            <form id="uploadForm">
+                <label for="fileInput">Choose a CSV file:</label>
+                <input type="file" id="fileInput" name="file" accept=".csv" required>
+                
+                <button type="submit">Upload and Check Rules</button>
+            </form>
+            <p id="uploadError" class="error hidden"></p>
+        </div>
+
+        <div id="inputPreviewSection" class="results-section hidden">
+            <h2>1.5. Uploaded Data Preview (First 5 Rows)</h2>
+            <div id="inputPreviewTableContainer" class="table-container"></div>
+        </div>
+
+        <!-- Section for Defining UI Split Rules -->
+        <div class="results-section">
+            <button id="toggleDefineSplitSectionButton" type="button" style="margin-bottom: 10px;">Define a Custom Split Rule</button>
+            <div id="defineSplitRuleSection" class="hidden" style="border: 1px solid #ccc; padding: 15px; margin-bottom:15px; background-color:#f9f9f9;">
+                <h3>Define New Split Rule</h3>
+                <div>
+                    <label for="splitInputColumn">Input Column to Split:</label>
+                    <select id="splitInputColumn" style="margin-bottom: 10px;"></select>
+                </div>
+                <div>
+                    <label for="splitDelimiter">Delimiter:</label>
+                    <input type="text" id="splitDelimiter" value=" " style="margin-bottom: 10px;">
+                </div>
+            
+                <h4>Map Parts to Standard Columns:</h4>
+                <div style="margin-bottom: 5px;">
+                    <label style="min-width: 100px; display: inline-block;">Part 1 maps to:</label> 
+                    <select class="splitPartToStandardMap" data-part-number="1"></select>
+                </div>
+                <div style="margin-bottom: 5px;">
+                    <label style="min-width: 100px; display: inline-block;">Part 2 maps to:</label> 
+                    <select class="splitPartToStandardMap" data-part-number="2"></select>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="min-width: 100px; display: inline-block;">Part 3 maps to:</label> 
+                    <select class="splitPartToStandardMap" data-part-number="3"></select>
+                </div>
+                <button id="confirmAddSplitRule" type="button">Add This Split Rule & Close</button>
+            </div>
+
+            <div id="currentUiSplitRulesDisplay">
+                <h4>Current UI-Defined Split Rules:</h4>
+                <ul id="uiSplitRulesList" style="list-style-type: none; padding-left: 0;">
+                    <li>No UI-defined split rules yet.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section for Defining UI Address Parsing Rules -->
+        <div class="results-section">
+            <button id="toggleDefineAddressSectionButton" type="button" style="margin-bottom: 10px;">Define an Address Parsing Rule</button>
+            <div id="defineAddressRuleSection" class="hidden" style="border: 1px solid #ccc; padding: 15px; margin-bottom:15px; background-color:#f9f9f9;">
+                <h3>Define New Address Parsing Rule</h3>
+                <div>
+                    <label for="addressInputColumn">Input Column containing Address:</label>
+                    <select id="addressInputColumn" style="margin-bottom: 10px;"></select>
+                </div>
+                <div>
+                    <label for="addressType">Expected Format:</label>
+                    <select id="addressType" style="margin-bottom: 10px;">
+                        <option value="city_state">City, State (or City State)</option>
+                        <option value="city_state_zip">City, State ZIP (or City State ZIP)</option>
+                        <!-- Add more types later if needed -->
+                    </select>
+                </div>
+            
+                <h4>Map Parsed Parts to Standard Columns:</h4>
+                <div style="margin-bottom: 5px;">
+                    <label style="min-width: 100px; display: inline-block;">City maps to:</label> 
+                    <select class="addressPartToStandardMap" data-part-name="city"></select>
+                </div>
+                <div style="margin-bottom: 5px;">
+                    <label style="min-width: 100px; display: inline-block;">State maps to:</label> 
+                    <select class="addressPartToStandardMap" data-part-name="state"></select>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="min-width: 100px; display: inline-block;">ZipCode maps to:</label> 
+                    <select class="addressPartToStandardMap" data-part-name="zip_code"></select>
+                </div>
+                <button id="confirmAddAddressRule" type="button">Add This Address Rule & Close</button>
+            </div>
+
+            <div id="currentUiAddressRulesDisplay">
+                <h4>Current UI-Defined Address Parsing Rules:</h4>
+                <ul id="uiAddressRulesList" style="list-style-type: none; padding-left: 0;">
+                    <li>No UI-defined address rules yet.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- New section for Template Matches -->
+        <div id="template-matches-section" class="results-section hidden">
+            <h2>Potential Template Matches</h2>
+            <div id="template-matches-content">
+                <!-- Template matches will be loaded here by JavaScript -->
+                <p>Checking for existing templates...</p> 
+            </div>
+            <button id="apply-selected-template" class="hidden">Apply Selected Template</button>
+             <!-- Add a button or link to clear selection/ignore templates? -->
+        </div>
+        <!-- End of Template Matches Section -->
+
+        <div id="mappingResultsSection" class="results-section hidden">
+            <h2>2. Column Mapping Results</h2>
+            <p><strong>File:</strong> <span id="fileName"></span></p>
+            
+            <!-- NEW Fuzzy Threshold Slider Section -->
+            <div id="fuzzySliderSection" class="slider-container hidden">
+                <label for="fuzzyThresholdSlider">Adjust Fuzzy Match Threshold (for non-template matches):</label>
+                <input type="range" id="fuzzyThresholdSlider" name="fuzzy_threshold" min="0" max="100" value="85">
+                <span id="fuzzyThresholdValue">85</span>%
+                 <img id="remapLoadingIndicator" src="/static/spinner.gif" alt="Loading..." style="height: 20px; margin-left: 10px; display: none;"> 
+            </div>
+
+            <!-- NEW Placeholder for Template Match Status -->
+            <div id="templateMatchStatus" style="margin-bottom: 10px; font-weight: bold;"></div>
+            
+            <p>This is how the uploaded columns are mapped to the standard columns based on <code>rules.yaml</code>.</p>
+            <p>Review the automatic mappings below. You can override them using the dropdowns.</p>
+            <div id="editableMappingContainer"></div>
+            
+            <!-- Buttons for Processing and Saving Template -->
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                <form id="processForm" class="hidden">
+                     <input type="hidden" id="stepIdInput" name="step_id">
+                     <button type="submit">Approve Mapping & Process File</button>
+                </form>
+                <button id="saveTemplateButton" type="button" class="hidden" style="background-color: #ffc107; color: #333;">Save Current Mapping as Template</button>
+            </div>
+            <p id="processError" class="error hidden"></p>
+        </div>
+
+        <div id="outputDfSection" class="results-section hidden">
+            <h2>3. Standardized Output Data</h2>
+            <div id="outputTableContainer" class="table-container"></div>
+        </div>
+    </div>
+
+    <script>
+        const uploadForm = document.getElementById('uploadForm');
+        const processForm = document.getElementById('processForm');
+        
+        const inputPreviewSection = document.getElementById('inputPreviewSection');
+        const inputPreviewTableContainer = document.getElementById('inputPreviewTableContainer');
+        const fileNameSpan = document.getElementById('fileName');
+        const editableMappingContainer = document.getElementById('editableMappingContainer');
+        const stepIdInput = document.getElementById('stepIdInput');
+
+        const mappingResultsSection = document.getElementById('mappingResultsSection');
+        const outputDfSection = document.getElementById('outputDfSection');
+        const outputTableContainer = document.getElementById('outputTableContainer');
+
+        // Placeholder for template match status message
+        const templateMatchStatusDiv = document.getElementById('templateMatchStatus');
+
+        // NEW Slider Elements
+        const fuzzySliderSection = document.getElementById('fuzzySliderSection');
+        const fuzzyThresholdSlider = document.getElementById('fuzzyThresholdSlider');
+        const fuzzyThresholdValueSpan = document.getElementById('fuzzyThresholdValue');
+        const remapLoadingIndicator = document.getElementById('remapLoadingIndicator'); // Optional indicator
+
+        // NEW Save Template Button
+        const saveTemplateButton = document.getElementById('saveTemplateButton');
+
+        const uploadErrorP = document.getElementById('uploadError');
+        const processErrorP = document.getElementById('processError');
+
+        // NEW Template Matching Section Elements
+        const templateMatchesSection = document.getElementById('template-matches-section');
+        const templateMatchesContent = document.getElementById('template-matches-content');
+        const applySelectedTemplateButton = document.getElementById('apply-selected-template'); // We might re-purpose this or remove if selection triggers immediate remapping
+
+        let currentStepId = null; // Use stepIdInput.value to get current ID
+        let currentMappings = { ui_transformations: [], direct_column_maps: {} };
+        let allInputColumnNamesForSplitting = [];
+        let standardColumnNamesForSplitting = [];
+
+        // New UI elements for defining split rules
+        const toggleDefineSplitSectionButton = document.getElementById('toggleDefineSplitSectionButton');
+        const defineSplitRuleSection = document.getElementById('defineSplitRuleSection');
+        const splitInputColumnSelect = document.getElementById('splitInputColumn');
+        const splitDelimiterInput = document.getElementById('splitDelimiter');
+        const confirmAddSplitRuleButton = document.getElementById('confirmAddSplitRule');
+        const uiSplitRulesListUl = document.getElementById('uiSplitRulesList');
+        const splitPartMapSelects = document.querySelectorAll('.splitPartToStandardMap');
+
+        // New UI elements for defining address rules
+        const toggleDefineAddressSectionButton = document.getElementById('toggleDefineAddressSectionButton');
+        const defineAddressRuleSection = document.getElementById('defineAddressRuleSection');
+        const addressInputColumnSelect = document.getElementById('addressInputColumn');
+        const addressTypeSelect = document.getElementById('addressType');
+        const confirmAddAddressRuleButton = document.getElementById('confirmAddAddressRule');
+        const uiAddressRulesListUl = document.getElementById('uiAddressRulesList');
+        const addressPartMapSelects = document.querySelectorAll('.addressPartToStandardMap');
+
+        toggleDefineSplitSectionButton.addEventListener('click', () => {
+            defineSplitRuleSection.classList.toggle('hidden');
+        });
+
+        toggleDefineAddressSectionButton.addEventListener('click', () => {
+            defineAddressRuleSection.classList.toggle('hidden');
+        });
+
+        function populateRuleFormDropdowns() {
+            // Populate Input Column for Splitting
+            splitInputColumnSelect.innerHTML = ''; // Clear previous
+            addressInputColumnSelect.innerHTML = ''; // Clear previous for address input
+            allInputColumnNamesForSplitting.forEach(inputCol => {
+                const option = document.createElement('option');
+                option.value = inputCol;
+                option.textContent = inputCol;
+                splitInputColumnSelect.appendChild(option.cloneNode(true)); // Add to split input select
+                addressInputColumnSelect.appendChild(option); // Add to address input select
+            });
+
+            // Populate Standard Columns for Part Mapping (Split Rules)
+            splitPartMapSelects.forEach(select => {
+                const currentVal = select.value;
+                select.innerHTML = ''; // Clear previous
+                const unmappedOption = document.createElement('option');
+                unmappedOption.value = '__UNMAPPED__';
+                unmappedOption.textContent = '-- Not Mapped --';
+                select.appendChild(unmappedOption);
+
+                standardColumnNamesForSplitting.forEach(stdCol => {
+                    const option = document.createElement('option');
+                    option.value = stdCol;
+                    option.textContent = stdCol;
+                    select.appendChild(option);
+                });
+                select.value = currentVal || '__UNMAPPED__'; // Restore selection or default
+            });
+
+             // Populate Standard Columns for Part Mapping (Address Rules)
+             addressPartMapSelects.forEach(select => {
+                const currentVal = select.value;
+                select.innerHTML = ''; // Clear previous
+                const unmappedOption = document.createElement('option');
+                unmappedOption.value = '__UNMAPPED__';
+                unmappedOption.textContent = '-- Not Mapped --';
+                select.appendChild(unmappedOption);
+
+                standardColumnNamesForSplitting.forEach(stdCol => {
+                    // Suggest likely mappings
+                    const partName = select.dataset.partName; // city, state, zip_code
+                    const option = document.createElement('option');
+                    option.value = stdCol;
+                    option.textContent = stdCol;
+                     // Pre-select if standard name matches the part name (case-insensitive)
+                    if (stdCol.toLowerCase() === partName.toLowerCase()) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+                 // Restore previous selection if it exists, otherwise use pre-selected or default
+                 if (currentVal && currentVal !== '__UNMAPPED__') {
+                     select.value = currentVal;
+                 } else if (!select.querySelector('option[selected]')) {
+                      select.value = '__UNMAPPED__'; // Default if no match found and no previous value
+                 }
+            });
+        }
+        
+        function renderUiDefinedRules() {
+            // Render Split Rules
+            uiSplitRulesListUl.innerHTML = '';
+            const splitRules = currentMappings.ui_transformations.filter(r => r.type === 'split_name_by_delimiter');
+            if (splitRules.length === 0) {
+                const li = document.createElement('li');
+                li.textContent = 'No UI-defined split rules yet.';
+                uiSplitRulesListUl.appendChild(li);
+            } else {
+                splitRules.forEach((rule, index) => {
+                    const li = document.createElement('li');
+                    let ruleSummary = `Split Rule ${index + 1}: Split '${rule.input_column}' by '${rule.options.delimiter}'. Mappings: `;
+                    const mappings = [];
+                    for (const [stdCol, part] of Object.entries(rule.output_mapping)) {
+                        mappings.push(`${part} -> ${stdCol}`);
+                    }
+                    ruleSummary += mappings.join(', ') || 'No parts mapped.';
+                    
+                    li.textContent = ruleSummary;
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.className = 'delete-button';
+                    deleteButton.onclick = () => {
+                        // Find the original index in the main array
+                        const originalIndex = currentMappings.ui_transformations.findIndex(r => r === rule);
+                        if (originalIndex > -1) {
+                            currentMappings.ui_transformations.splice(originalIndex, 1);
+                        }
+                        renderUiDefinedRules(); 
+                    };
+                    li.appendChild(deleteButton);
+                    uiSplitRulesListUl.appendChild(li);
+                });
+            }
+
+            // Render Address Rules
+            uiAddressRulesListUl.innerHTML = '';
+            const addressRules = currentMappings.ui_transformations.filter(r => r.type === 'parse_address');
+             if (addressRules.length === 0) {
+                const li = document.createElement('li');
+                li.textContent = 'No UI-defined address rules yet.';
+                uiAddressRulesListUl.appendChild(li);
+            } else {
+                addressRules.forEach((rule, index) => {
+                    const li = document.createElement('li');
+                    let ruleSummary = `Address Rule ${index + 1}: Parse '${rule.input_column}' (as ${rule.options.address_type}). Mappings: `;
+                    const mappings = [];
+                    for (const [stdCol, part] of Object.entries(rule.output_mapping)) {
+                        mappings.push(`${part} -> ${stdCol}`);
+                    }
+                    ruleSummary += mappings.join(', ') || 'No parts mapped.';
+                    
+                    li.textContent = ruleSummary;
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.className = 'delete-button';
+                    deleteButton.onclick = () => {
+                         // Find the original index in the main array
+                        const originalIndex = currentMappings.ui_transformations.findIndex(r => r === rule);
+                        if (originalIndex > -1) {
+                            currentMappings.ui_transformations.splice(originalIndex, 1);
+                        }
+                        renderUiDefinedRules(); 
+                    };
+                    li.appendChild(deleteButton);
+                    uiAddressRulesListUl.appendChild(li);
+                });
+            }
+        }
+
+        // --- Reusable Function to Render the Editable Mapping UI --- 
+        function renderEditableMappingUI(mappingResults, allInputCols, standardCols) {
+            editableMappingContainer.innerHTML = ''; // Clear previous content
+            const autoMapped = mappingResults.mapped_columns || {};
+            currentMappings.direct_column_maps = {}; // Reset internal state before rebuilding
+
+            if (standardCols.length === 0) {
+                editableMappingContainer.innerHTML = '<p>No standard column definitions found in rules.yaml.</p>';
+                return;
+            }
+
+            standardCols.forEach(std_name => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'editable-mapping-item';
+
+                const stdColInfoDiv = document.createElement('div');
+                stdColInfoDiv.className = 'standard-col-info';
+                
+                const indicator = document.createElement('span');
+                indicator.className = 'match-indicator';
+
+                const stdNameSpan = document.createElement('span');
+                stdNameSpan.className = 'standard-col-name';
+                stdNameSpan.textContent = std_name;
+
+                const currentMapDetailsSpan = document.createElement('span');
+                currentMapDetailsSpan.className = 'current-map-details';
+
+                let autoMappedInput = null;
+                let mapMethod = 'None';
+                if (autoMapped[std_name]) {
+                    const map_info = autoMapped[std_name];
+                    autoMappedInput = map_info.input;
+                    mapMethod = map_info.method || 'unknown';
+                    currentMapDetailsSpan.innerHTML = `&larr; ${map_info.input} <small><i>(${mapMethod})</i></small>`;
+                    // Set indicator color based on method
+                    if (mapMethod === 'exact') {
+                         indicator.classList.add('match-exact');
+                         currentMapDetailsSpan.innerHTML = `&larr; ${map_info.input} <small><i>(Exact Match)</i></small>`;
+                    } else if (mapMethod === 'normalized') {
+                         indicator.classList.add('match-normalized');
+                         currentMapDetailsSpan.innerHTML = `&larr; ${map_info.input} <small><i>(Normalized Match)</i></small>`;
+                    } else if (mapMethod.startsWith('alias')) {
+                         indicator.classList.add('match-alias');
+                         currentMapDetailsSpan.innerHTML = `&larr; ${map_info.input} <small><i>(Alias Match: ${mapMethod.split('(')[1]}</i></small>`; // Show alias detail
+                    } else if (mapMethod.startsWith('fuzzy')) {
+                        const scoreMatch = mapMethod.match(/\((\d+)%\)/);
+                        let score = 0;
+                        if (scoreMatch && scoreMatch[1]) score = parseInt(scoreMatch[1]);
+                        
+                        if (score >= 95) indicator.classList.add('match-fuzzy-high');
+                        else if (score >= 90) indicator.classList.add('match-fuzzy-high');
+                        else if (score >= 80) indicator.classList.add('match-fuzzy-medium');
+                        else indicator.classList.add('match-fuzzy-low');
+                        // Add "Suggest:" prefix for fuzzy matches
+                        currentMapDetailsSpan.innerHTML = `Suggest: ${map_info.input} <small><i>(${mapMethod})</i></small>`;
+                         
+                    } else if (mapMethod.startsWith('content')) {
+                         indicator.classList.add('match-content'); // Use new purple color
+                         // Add "Suggest:" prefix and clarify method
+                         currentMapDetailsSpan.innerHTML = `Suggest: ${map_info.input} <small><i>(Content Match: ${mapMethod.split('(')[1]}</i></small>`;
+                    } else { // Fallback for unknown methods
+                        indicator.classList.add('match-none');
+                    }
+                    indicator.title = `Match Method: ${mapMethod}`; // Add tooltip
+                } else {
+                    currentMapDetailsSpan.innerHTML = '<small><i>(No automatic match)</i></small>';
+                    indicator.classList.add('match-none');
+                     indicator.title = 'Match Method: None';
+                }
+                // Update the global state based on this initial/auto mapping
+                currentMappings.direct_column_maps[std_name] = autoMappedInput; 
+
+                stdColInfoDiv.appendChild(indicator);
+                stdColInfoDiv.appendChild(stdNameSpan);
+                stdColInfoDiv.appendChild(currentMapDetailsSpan);
+
+                const dropdownDiv = document.createElement('div');
+                dropdownDiv.className = 'map-dropdown';
+                const select = document.createElement('select');
+                select.dataset.standardColumn = std_name;
+
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '__UNMAPPED__';
+                defaultOption.textContent = '-- Not Mapped --';
+                select.appendChild(defaultOption);
+
+                allInputCols.forEach(input_col => {
+                    const option = document.createElement('option');
+                    option.value = input_col;
+                    option.textContent = input_col;
+                    if (autoMappedInput === input_col) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+                // Ensure correct initial selection in dropdown
+                if (autoMappedInput === null) {
+                     select.value = '__UNMAPPED__';
+                } else {
+                     select.value = autoMappedInput;
+                }
+
+                // Event listener for manual changes
+                select.addEventListener('change', function(e) {
+                    const selectedValue = (e.target.value === '__UNMAPPED__') ? null : e.target.value;
+                    currentMappings.direct_column_maps[e.target.dataset.standardColumn] = selectedValue;
+                    console.log(`Manual mapping for ${e.target.dataset.standardColumn}: ${selectedValue}`); // Debug log
+                });
+
+                dropdownDiv.appendChild(select);
+                itemDiv.appendChild(stdColInfoDiv);
+                itemDiv.appendChild(dropdownDiv);
+                editableMappingContainer.appendChild(itemDiv);
+            });
+        }
+        // --- END Reusable Function --- 
+
+        confirmAddSplitRuleButton.addEventListener('click', () => {
+            const input_column = splitInputColumnSelect.value;
+            const delimiter = splitDelimiterInput.value;
+            if (!input_column) {
+                alert("Please select an input column to split.");
+                return;
+            }
+            if (!delimiter) {
+                alert("Please enter a delimiter.");
+                return;
+            }
+
+            const output_mapping = {};
+            let partsMappedCount = 0;
+            splitPartMapSelects.forEach(select => {
+                const partNumber = select.dataset.partNumber;
+                const standardColumnSelected = select.value;
+                if (standardColumnSelected !== '__UNMAPPED__') {
+                    // Check if this standard column is already mapped by another part in THIS rule
+                    for(const [stdCol, pt] of Object.entries(output_mapping)){
+                        if(stdCol === standardColumnSelected){
+                             alert(`Standard column '${standardColumnSelected}' is already mapped by ${pt} in this rule. Each standard column can only be targeted once per split rule.`);
+                             throw new Error("Duplicate target in split rule"); // Throw to stop execution
+                        }
+                    }
+                    output_mapping[standardColumnSelected] = `part_${partNumber}`;
+                    partsMappedCount++;
+                }
+            });
+
+            if (partsMappedCount === 0) {
+                alert("Please map at least one part to a standard column.");
+                return;
+            }
+
+            const newRule = {
+                type: "split_name_by_delimiter", // Matches backend expectation
+                input_column: input_column,
+                options: { delimiter: delimiter },
+                output_mapping: output_mapping
+            };
+            currentMappings.ui_transformations.push(newRule);
+            renderUiDefinedRules();
+            // Reset form - simple reset for now
+            // splitInputColumnSelect.value = allInputColumnNamesForSplitting[0] || '';
+            // splitDelimiterInput.value = ' ';
+            // splitPartMapSelects.forEach(s => s.value = '__UNMAPPED__');
+            defineSplitRuleSection.classList.add('hidden'); // Hide after adding
+        });
+
+        confirmAddAddressRuleButton.addEventListener('click', () => {
+            const input_column = addressInputColumnSelect.value;
+            const address_type = addressTypeSelect.value;
+            if (!input_column) {
+                alert("Please select an input column containing the address.");
+                return;
+            }
+            
+            const output_mapping = {};
+            let partsMappedCount = 0;
+            addressPartMapSelects.forEach(select => {
+                const partName = select.dataset.partName; // 'city', 'state', 'zip_code'
+                const standardColumnSelected = select.value;
+                if (standardColumnSelected !== '__UNMAPPED__') {
+                    // Check if this standard column is already mapped by another part in THIS rule
+                    for (const [stdCol, pt] of Object.entries(output_mapping)) {
+                        if (stdCol === standardColumnSelected) {
+                            alert(`Standard column '${standardColumnSelected}' is already mapped by the '${pt}' part in this rule. Each standard column can only be targeted once per address rule.`);
+                            throw new Error("Duplicate target in address rule"); // Stop execution
+                        }
+                    }
+                     // Check if this standard column is already targeted by ANY OTHER rule (split or address)
+                     for (const existingRule of currentMappings.ui_transformations) {
+                        if (existingRule.output_mapping && existingRule.output_mapping[standardColumnSelected]) {
+                            alert(`Standard column '${standardColumnSelected}' is already targeted by another UI rule (Rule type: ${existingRule.type}). Please remove the other rule or map to a different column.`);
+                            throw new Error("Duplicate target across UI rules"); // Stop execution
+                        }
+                    }
+
+                    output_mapping[standardColumnSelected] = partName;
+                    partsMappedCount++;
+                }
+            });
+
+            if (partsMappedCount === 0) {
+                alert("Please map at least one address part (City, State, or ZipCode) to a standard column.");
+                return;
+            }
+
+            const newRule = {
+                type: "parse_address", // Matches backend expectation
+                input_column: input_column,
+                options: { address_type: address_type },
+                output_mapping: output_mapping
+            };
+            currentMappings.ui_transformations.push(newRule);
+            renderUiDefinedRules(); 
+            // Reset form
+            // addressInputColumnSelect.value = allInputColumnNamesForSplitting[0] || '';
+            // addressTypeSelect.value = 'city_state';
+            // addressPartMapSelects.forEach(s => { 
+            //     s.value = '__UNMAPPED__'; // Reset selection 
+            //     const partName = s.dataset.partName;
+            //     const matchingStdCol = standardColumnNamesForSplitting.find(std => std.toLowerCase() === partName.toLowerCase());
+            //     if (matchingStdCol) s.value = matchingStdCol; // Re-apply default suggestion
+            // });
+            defineAddressRuleSection.classList.add('hidden'); // Hide after adding
+        });
+
+        uploadForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            inputPreviewSection.classList.add('hidden');
+            mappingResultsSection.classList.add('hidden');
+            outputDfSection.classList.add('hidden');
+            uploadErrorP.classList.add('hidden');
+            processErrorP.classList.add('hidden');
+            templateMatchesSection.classList.add('hidden'); // Hide template section initially
+            templateMatchesContent.innerHTML = '<p>Checking for existing templates...</p>'; // Reset content
+            
+            const formData = new FormData();
+            formData.append('file', document.getElementById('fileInput').files[0]);
+
+            try {
+                const response = await fetch('/uploadfile/', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+
+                if (!response.ok) {
+                    uploadErrorP.textContent = `Error: ${result.error || response.statusText}`;
+                    uploadErrorP.classList.remove('hidden');
+                    return;
+                }
+
+                fileNameSpan.textContent = result.filename;
+                stepIdInput.value = result.step_id;
+                // Store the current step ID globally for remap calls
+                // currentStepId = result.step_id; // Already done via stepIdInput.value which triggerRemapping reads
+
+                if (result.input_preview_html) {
+                    inputPreviewTableContainer.innerHTML = result.input_preview_html;
+                    inputPreviewSection.classList.remove('hidden');
+                } else {
+                    inputPreviewTableContainer.innerHTML = '<p>No preview available.</p>';
+                    inputPreviewSection.classList.remove('hidden');
+                }
+
+                // --- START NEW: Populate Potential Template Matches ---
+                templateMatchesContent.innerHTML = ''; // Clear loading message
+                const potentialMatches = result.potential_template_matches || []; // Assume backend sends this array
+                
+                if (potentialMatches.length > 0) {
+                    const list = document.createElement('ul');
+                    // list.style.listStyle = 'none'; // REMOVED
+                    // list.style.paddingLeft = '0'; // REMOVED
+
+                    potentialMatches.forEach(match => {
+                        const li = document.createElement('li');
+                        // li.style.marginBottom = '5px'; // REMOVED
+
+                        const radio = document.createElement('input');
+                        radio.type = 'radio';
+                        radio.name = 'template_choice'; // Group radios
+                        radio.value = match.name;
+                        radio.id = `template_radio_${match.name.replace(/\\s+/g, '_')}`; // Create unique ID
+                        // radio.style.marginRight = '8px'; // REMOVED
+                        
+                        // Check if this match is the one the backend auto-applied
+                        if (result.matched_template_name && match.name === result.matched_template_name) {
+                            radio.checked = true;
+                        }
+
+                        // Add event listener to trigger remapping if a *different* template is chosen
+                        radio.addEventListener('change', () => {
+                            if (radio.checked) {
+                                console.log(`Template selected: ${match.name}`);
+                                // TODO: Trigger a backend call to apply this template's mappings
+                                // We might need a new endpoint like /applytemplate/ or modify /remap/
+                                triggerRemappingWithTemplate(stepIdInput.value, match.name); 
+                            }
+                        });
+
+
+                        const label = document.createElement('label');
+                        label.htmlFor = radio.id;
+                        label.textContent = `${match.name} (Score: ${match.score}%, Matched: ${match.columns_matched}/${match.columns_total})`; 
+                        // label.style.cursor = 'pointer'; // REMOVED
+
+                        li.appendChild(radio);
+                        li.appendChild(label);
+                        list.appendChild(li);
+                    });
+                    
+                    // Option to use general rules instead of a template
+                    const liGeneral = document.createElement('li');
+                    liGeneral.id = 'template_radio_general_li'; // Added ID for potential specific styling
+                    // liGeneral.style.marginTop = '10px'; // REMOVED
+                    const radioGeneral = document.createElement('input');
+                    radioGeneral.type = 'radio';
+                    radioGeneral.name = 'template_choice';
+                    radioGeneral.value = '__GENERAL__'; // Special value
+                    radioGeneral.id = 'template_radio_general';
+                    // radioGeneral.style.marginRight = '8px'; // REMOVED
+                    
+                    // If no template was auto-applied, check this one
+                    if (!result.matched_template_name) {
+                        radioGeneral.checked = true;
+                    }
+
+                    radioGeneral.addEventListener('change', () => {
+                        if (radioGeneral.checked) {
+                            console.log("Selected: Use General Rules");
+                            // Trigger remapping with the default fuzzy threshold
+                             triggerRemapping(stepIdInput.value, fuzzyThresholdSlider.value); // Use current slider value
+                             templateMatchStatusDiv.textContent = 'Using general column mapping rules.'; // Update status
+                             templateMatchStatusDiv.style.color = '#555';
+                             fuzzySliderSection.classList.remove('hidden'); // Ensure slider is visible
+                        }
+                    });
+
+                    const labelGeneral = document.createElement('label');
+                    labelGeneral.htmlFor = radioGeneral.id;
+                    labelGeneral.textContent = "Use General Rules / Manual Mapping";
+                    // labelGeneral.style.cursor = 'pointer'; // REMOVED
+
+                    liGeneral.appendChild(radioGeneral);
+                    liGeneral.appendChild(labelGeneral);
+                    list.appendChild(liGeneral);
+
+
+                    templateMatchesContent.appendChild(list);
+                    templateMatchesSection.classList.remove('hidden'); // Show the section
+                    // applySelectedTemplateButton.classList.remove('hidden'); // Maybe show this, or trigger on radio change? Let's trigger on change for now.
+                } else {
+                     templateMatchesContent.innerHTML = '<p>No potential template matches found based on column headers.</p>'; // Or just leave it empty?
+                     templateMatchesSection.classList.remove('hidden'); // Still show the section to say none were found? Or keep hidden? Let's show it for clarity.
+                }
+                // --- END NEW: Populate Potential Template Matches ---
+
+
+                editableMappingContainer.innerHTML = ''; // Clear container before rendering
+                currentMappings = { ui_transformations: [], direct_column_maps: {} }; 
+                renderUiDefinedRules();
+
+                allInputColumnNamesForSplitting = result.all_input_columns || [];
+                standardColumnNamesForSplitting = result.standard_column_names || [];
+                populateRuleFormDropdowns(); 
+                
+                 // --- Set up and show the fuzzy slider --- 
+                 const initialThreshold = result.initial_fuzzy_threshold !== undefined ? result.initial_fuzzy_threshold : 85;
+                 fuzzyThresholdSlider.value = initialThreshold;
+                 fuzzyThresholdValueSpan.textContent = initialThreshold;
+                 fuzzySliderSection.classList.remove('hidden');
+                 
+                 // --- Display Template Match Status and Manage Slider Visibility ---
+                 if (result.matched_template_name) {
+                     templateMatchStatusDiv.textContent = `Applied template: '${result.matched_template_name}'. Mappings based on this template.`;
+                     templateMatchStatusDiv.style.color = 'green';
+                     fuzzySliderSection.classList.add('hidden'); // Hide slider if template is used
+                 } else {
+                     templateMatchStatusDiv.textContent = 'No specific template matched. Using general column mapping rules.';
+                     templateMatchStatusDiv.style.color = '#555';
+                     // Ensure slider is visible for non-template matches
+                     const initialThreshold = result.initial_fuzzy_threshold !== undefined ? result.initial_fuzzy_threshold : 85;
+                     fuzzyThresholdSlider.value = initialThreshold;
+                     fuzzyThresholdValueSpan.textContent = initialThreshold;
+                     fuzzySliderSection.classList.remove('hidden'); 
+                 }
+                 // --- End Template Match Status ---
+
+                // Call the reusable function to render initial mapping
+                // It uses the mapping_results received from the backend, 
+                // which will be based on the template if one was matched.
+                renderEditableMappingUI(result.mapping_results || {}, allInputColumnNamesForSplitting, standardColumnNamesForSplitting);
+                
+                // Show relevant sections and buttons
+                mappingResultsSection.classList.remove('hidden');
+                document.getElementById('processForm').classList.remove('hidden');
+                saveTemplateButton.classList.remove('hidden'); // Make sure save button is shown here
+
+            } catch (error) {
+                console.error('Upload error:', error);
+                uploadErrorP.textContent = 'An unexpected error occurred during upload.';
+                uploadErrorP.classList.remove('hidden');
+            }
+        });
+        
+        // --- Event Listener for Fuzzy Slider --- 
+        let remapTimeout;
+        fuzzyThresholdSlider.addEventListener('input', function() {
+            const newThreshold = this.value;
+            fuzzyThresholdValueSpan.textContent = newThreshold; // Update display immediately
+
+            // Only trigger remapping if no template was initially matched.
+            // If a template was matched, the slider should be hidden, but this is a safety check.
+            const currentStepData = result; // Assuming 'result' from upload is accessible here or stored
+                                        // This is a simplification; ideally, we'd check a global var 
+                                        // set during upload, e.g., `let templateWasMatched = false;`
+            // For now, we'll rely on the slider being hidden. 
+            // If we want to enable slider *after* a template match to *override* template, that's a bigger change.
+
+            // Debounce the fetch call
+            clearTimeout(remapTimeout);
+            remapTimeout = setTimeout(() => {
+                 triggerRemapping(stepIdInput.value, newThreshold); // Read current ID from input
+            }, 300); 
+        });
+
+        async function triggerRemapping(stepId, threshold) {
+             if (!stepId) {
+                 console.warn("Cannot remap without a step ID.");
+                 return;
+             }
+
+             console.log(`Triggering remap for step ${stepId} with threshold ${threshold}...`);
+             showRemapLoading(); 
+             processErrorP.classList.add('hidden');
+
+             const formData = new FormData();
+             formData.append('step_id', stepId);
+             formData.append('new_threshold', threshold);
+
+             try {
+                 const response = await fetch('/remap/', {
+                     method: 'POST',
+                     body: formData
+                 });
+                 const result = await response.json();
+                 hideRemapLoading(); 
+
+                 if (!response.ok) {
+                     throw new Error(result.error || `Remapping failed with status: ${response.status}`);
+                 }
+
+                 console.log("Remap successful:", result);
+                 
+                 // --- Call the reusable function to render updated mapping --- 
+                 // When remapping via slider, always indicate it's now a custom/adjusted mapping
+                 templateMatchStatusDiv.textContent = 'Mappings adjusted by fuzzy threshold slider.';
+                 templateMatchStatusDiv.style.color = '#cc7a00'; // Orange to show it's modified
+                 fuzzySliderSection.classList.remove('hidden'); // Ensure slider is visible
+
+                 renderEditableMappingUI(result.mapping_results || {}, allInputColumnNamesForSplitting, standardColumnNamesForSplitting);
+                 // --- End updated mapping render ---
+
+                 // TODO: Optionally update suggestions display if needed
+                 // currentSuggestedTransformations = result.suggested_transformations || [];
+                 // renderSuggestions(currentSuggestedTransformations);
+
+             } catch (error) {
+                 console.error('Remapping error:', error);
+                 processErrorP.textContent = `Remapping Error: ${error.message}`; 
+                 processErrorP.classList.remove('hidden');
+                 hideRemapLoading();
+             }
+        }
+
+        // --- NEW Function to trigger remapping based on selected template ---
+        async function triggerRemappingWithTemplate(stepId, templateName) {
+            if (!stepId) {
+                console.warn("Cannot apply template without a step ID.");
+                return;
+            }
+            console.log(`Applying template '${templateName}' for step ${stepId}...`);
+            showRemapLoading();
+            processErrorP.classList.add('hidden');
+
+            const formData = new FormData();
+            formData.append('step_id', stepId);
+            formData.append('template_name', templateName); // Send the chosen template name
+
+            try {
+                 // We can probably reuse the /remap/ endpoint, or create a new one /applytemplate/
+                 // Let's assume /remap/ can handle 'template_name' instead of 'new_threshold' for now
+                 const response = await fetch('/remap/', { 
+                     method: 'POST',
+                     body: formData
+                 });
+                 const result = await response.json();
+                 hideRemapLoading();
+
+                 if (!response.ok) {
+                     throw new Error(result.error || `Applying template failed with status: ${response.status}`);
+                 }
+
+                 console.log("Template applied successfully:", result);
+                 
+                 // Update the status message
+                 templateMatchStatusDiv.textContent = `Applied template: '${templateName}'. Mappings based on this template.`;
+                 templateMatchStatusDiv.style.color = 'green';
+                 fuzzySliderSection.classList.add('hidden'); // Hide slider when template is active
+
+                 // Render the new mappings provided by the backend
+                 renderEditableMappingUI(result.mapping_results || {}, allInputColumnNamesForSplitting, standardColumnNamesForSplitting);
+
+                 // Reset UI-defined rules when applying a template? Maybe not, user might want to combine. Let's leave them for now.
+                 // currentMappings.ui_transformations = []; 
+                 // renderUiDefinedRules(); 
+
+             } catch (error) {
+                 console.error('Apply Template error:', error);
+                 processErrorP.textContent = `Apply Template Error: ${error.message}`; 
+                 processErrorP.classList.remove('hidden');
+                 hideRemapLoading();
+                 // Maybe revert radio button selection if it fails? Or show error prominently.
+             }
+        }
+        // --- END NEW Function ---
+
+        function showRemapLoading() {
+            if(remapLoadingIndicator) remapLoadingIndicator.style.display = 'inline-block';
+        }
+
+        function hideRemapLoading() {
+            if(remapLoadingIndicator) remapLoadingIndicator.style.display = 'none';
+        }
+
+        processForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            outputDfSection.classList.add('hidden');
+            processErrorP.classList.add('hidden');
+
+            const step_id = stepIdInput.value;
+            if (!step_id) {
+                processErrorP.textContent = 'No processing step ID found. Please upload a file first.';
+                processErrorP.classList.remove('hidden');
+                return;
+            }
+
+            // Create a FormData object to send the step_id AND the user_mappings
+            const formData = new FormData();
+            formData.append('step_id', step_id);
+            // Send the entire currentMappings object
+            formData.append('user_mappings_json', JSON.stringify(currentMappings));
+
+            try {
+                const response = await fetch('/processfile/', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+
+                if (!response.ok) {
+                    processErrorP.textContent = `Error: ${result.error || response.statusText}`;
+                    processErrorP.classList.remove('hidden');
+                    return;
+                }
+
+                if (result.output_df_html) {
+                    outputTableContainer.innerHTML = result.output_df_html;
+                    outputDfSection.classList.remove('hidden');
+                } else {
+                    outputTableContainer.innerHTML = '<p>No output data received or processing failed.</p>';
+                    outputDfSection.classList.remove('hidden');
+                }
+
+            } catch (error) {
+                console.error('Processing error:', error);
+                processErrorP.textContent = 'An unexpected error occurred during processing.';
+                processErrorP.classList.remove('hidden');
+            }
+        });
+
+        // --- Event Listener for Save Template Button --- 
+        saveTemplateButton.addEventListener('click', async function() {
+            const templateName = prompt("Enter a name for this new mapping template:");
+            if (!templateName) {
+                alert("Template name cannot be empty. Save cancelled.");
+                return;
+            }
+            
+            const templateDescription = prompt("Enter an optional description for this template:", ""); // Default empty description
+
+            const stepId = stepIdInput.value;
+            if (!stepId) {
+                alert("Error: Cannot save template without a valid processing step ID.");
+                return;
+            }
+
+            // Get the *current* direct mappings from the JS variable
+            // Ensure we filter out any null/undefined values explicitly mapped by user
+            const mappingsToSave = {};
+            for (const [stdCol, inputCol] of Object.entries(currentMappings.direct_column_maps)) {
+                 if (inputCol && inputCol !== '__UNMAPPED__') { // Only save actual mappings
+                     mappingsToSave[stdCol] = inputCol;
+                 }
+             }
+
+             if (Object.keys(mappingsToSave).length === 0) {
+                alert("Cannot save template with no columns mapped.");
+                return;
+             }
+
+             console.log("Saving template:", templateName, "with mappings:", mappingsToSave);
+
+             const formData = new FormData();
+             formData.append('step_id', stepId); // Needed by backend to get original columns
+             formData.append('template_name', templateName);
+             formData.append('template_description', templateDescription);
+             formData.append('direct_mappings_json', JSON.stringify(mappingsToSave));
+
+             // Show some indicator - maybe reuse the remap one?
+             showRemapLoading(); 
+             processErrorP.classList.add('hidden'); // Hide previous errors
+
+             try {
+                 const response = await fetch('/savetemplate/', {
+                     method: 'POST',
+                     body: formData
+                 });
+                 const result = await response.json();
+                 hideRemapLoading(); 
+
+                 if (!response.ok) {
+                     throw new Error(result.error || `Saving template failed with status: ${response.status}`);
+                 }
+
+                 alert(`Success: ${result.message || 'Template saved successfully!'}`); // Show success message
+
+             } catch (error) {
+                 console.error('Save Template error:', error);
+                 // Display error near the process button area
+                 processErrorP.textContent = `Save Template Error: ${error.message}`;
+                 processErrorP.classList.remove('hidden');
+                 hideRemapLoading();
+             }
+        });
+
+    </script>
+</body>
+</html> 
